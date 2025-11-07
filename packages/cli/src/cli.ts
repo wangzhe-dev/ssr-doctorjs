@@ -33,9 +33,17 @@ program
 
 program
   .command('check')
-  .description('Check specific files for SSR issues')
-  .argument('[files...]', 'Files to check')
-  .option('--fix', 'Attempt to fix issues automatically')
-  .action(check);
+  .description('Check specific files for SSR compatibility issues')
+  .argument('[files...]', 'Files to check (e.g., src/App.tsx src/utils/dom.ts)')
+  .option('--fix', 'Attempt to fix issues automatically (coming soon)')
+  .option('-v, --verbose', 'Show detailed information including code snippets', false)
+  .option('-f, --format <format>', 'Output format: text or json (default: text)', 'text')
+  .action((files, options) => {
+    check(files, {
+      fix: options.fix,
+      verbose: options.verbose,
+      format: options.format,
+    });
+  });
 
 program.parse();

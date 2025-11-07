@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json.schemastore.org/ssrdoctor.json",
+  "extends": "@ssr-doctor/config-recommended",
+  "rules": {
+    "browser-api": {
+      "severity": "error",
+      "allowedAPIs": [],
+      "ignorePatterns": ["**/*.test.*"]
+    },
+    "dynamic-ssr": {
+      "severity": "warning",
+      "autoFix": false
+    },
+    "hydration-risk": {
+      "severity": "error"
+    }
+  },
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "**/__tests__/**",
+    "**/__mocks__/**"
+  ],
+  "format": "text",
+  "output": "./ssr-report.md",
+  "strict": false,
+  "verbose": false
+}
