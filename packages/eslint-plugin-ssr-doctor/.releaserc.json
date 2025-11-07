@@ -1,5 +1,6 @@
 {
   "branches": ["main"],
+  "tagFormat": "eslint-plugin-v${version}",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -12,7 +13,8 @@
     [
       "@semantic-release/npm",
       {
-        "npmPublish": false
+        "npmPublish": true,
+        "pkgRoot": "."
       }
     ],
     [
@@ -20,7 +22,7 @@
       {
         "assets": [
           {
-            "path": "packages/*/dist/**",
+            "path": "dist/**",
             "label": "Distribution files"
           },
           {
@@ -33,8 +35,8 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md", "package.json", "pnpm-lock.yaml"],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "assets": ["CHANGELOG.md", "package.json"],
+        "message": "chore(eslint-plugin): release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ]
   ]
