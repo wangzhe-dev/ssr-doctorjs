@@ -1,14 +1,26 @@
 import chalk from 'chalk';
-import { detectSSRIssues, getIssueStats } from '../analyzer.js';
-import type { SSRIssue } from '../analyzer.js';
+import { detectSSRIssues, getIssueStats, type SSRIssue } from '@ssr-doctor/core';
+import { loadConfig, mergeWithCLI, validateConfig } from '../config.js';
 
 export interface CheckOptions {
-  fix?: boolean;
   verbose?: boolean;
   format?: 'text' | 'json';
+  config?: string;
 }
 
 export async function check(files: string[], options: CheckOptions = {}) {
+  // Load and merge configuration
+  const config = loadConfig(options.config);
+  const finalOptions = mergeWithCLI(config, options);
+
+  // Validate configuration
+  const errors = validateConfig(finalOptions);
+  if (errors.length > 0) {
+    console.error(chalk.red('Configuration errors:'));
+    errors.forEach(err => console.error(chalk.red(`  - ${err}`)));
+    process.exit(1);
+  }
+
   if (files.length === 0) {
     console.log(chalk.yellow('⚠️  No files specified'));
     console.log(chalk.dim('\nUsage: ssr-doctor check <file1> <file2> ...'));
@@ -28,7 +40,9 @@ export async function check(files: string[], options: CheckOptions = {}) {
         allIssues.push(...issues);
       }
     } catch (error) {
-      console.error(chalk.red(`❌ Error checking ${file}:`), error);
+      if (finalOptions.verbose) {
+        console.error(chalk.red(`❌ Error checking ${file}:`), error);
+      }
     }
   }
 
@@ -36,7 +50,8 @@ export async function check(files: string[], options: CheckOptions = {}) {
   const stats = getIssueStats(allIssues);
 
   // Output results
-  if (options.format === 'json') {
+  const format = finalOptions.format || 'text';
+  if (format === 'json') {
     // JSON output
     console.log(JSON.stringify({
       summary: stats,
@@ -63,7 +78,7 @@ export async function check(files: string[], options: CheckOptions = {}) {
 
           console.log(`  ${severityIcon} ${location} ${apiName} - ${issue.message}`);
 
-          if (options.verbose) {
+          if (finalOptions.verbose) {
             console.log(chalk.dim(`     ${issue.code}`));
             if (issue.suggestion) {
               console.log(chalk.blue(`     💡 ${issue.suggestion}`));
@@ -73,14 +88,8 @@ export async function check(files: string[], options: CheckOptions = {}) {
       }
 
       // Tips
-      if (!options.verbose) {
+      if (!finalOptions.verbose) {
         console.log(chalk.dim('\n💡 Tip: Use --verbose to see code snippets and suggestions'));
-      }
-
-      // Fix message
-      if (options.fix) {
-        console.log(chalk.dim('\n🔧 Auto-fix is not yet implemented'));
-        console.log(chalk.dim('   Coming soon: automatic fixes for common issues'));
       }
 
       console.log('');

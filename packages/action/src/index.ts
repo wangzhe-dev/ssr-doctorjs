@@ -1,8 +1,7 @@
 import * as core from '@actions/core';
 import { glob } from 'glob';
-import { detectSSRIssues, getIssueStats } from './analyzer.js';
+import { detectSSRIssues, getIssueStats, type SSRIssue } from '@ssr-doctor/core';
 import { formatMarkdown, formatSARIF } from './formatters.js';
-import type { SSRIssue } from './analyzer.js';
 
 async function run(): Promise<void> {
   try {

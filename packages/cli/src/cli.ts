@@ -20,6 +20,7 @@ program
   .option('-s, --strict', 'Fail on warnings in addition to errors (default: false)', false)
   .option('-i, --ignore <patterns...>', 'Glob patterns to ignore (e.g., "**/*.test.tsx")')
   .option('-v, --verbose', 'Show detailed information including code snippets (default: false)', false)
+  .option('-c, --config <path>', 'Path to config file (default: .ssrdoctorrc.json)')
   .action((options) => {
     scan({
       path: options.path,
@@ -28,6 +29,7 @@ program
       strict: options.strict,
       ignore: options.ignore || [],
       verbose: options.verbose,
+      config: options.config,
     });
   });
 
@@ -35,14 +37,14 @@ program
   .command('check')
   .description('Check specific files for SSR compatibility issues')
   .argument('[files...]', 'Files to check (e.g., src/App.tsx src/utils/dom.ts)')
-  .option('--fix', 'Attempt to fix issues automatically (coming soon)')
   .option('-v, --verbose', 'Show detailed information including code snippets', false)
   .option('-f, --format <format>', 'Output format: text or json (default: text)', 'text')
+  .option('-c, --config <path>', 'Path to config file (default: .ssrdoctorrc.json)')
   .action((files, options) => {
     check(files, {
-      fix: options.fix,
       verbose: options.verbose,
       format: options.format,
+      config: options.config,
     });
   });
 

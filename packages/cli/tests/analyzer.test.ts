@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectSSRIssues } from '../src/analyzer.js';
+import { detectSSRIssues } from '@ssr-doctor/core';
 import { writeFileSync, unlinkSync } from 'fs';
 import { join } from 'path';
 

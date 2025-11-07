@@ -18,7 +18,7 @@ export interface SSRDoctorConfig {
     };
     'dynamic-ssr'?: {
       severity?: 'error' | 'warning' | 'off';
-      autoFix?: boolean;
+      
     };
     'hydration-risk'?: {
       severity?: 'error' | 'warning' | 'off';
@@ -63,7 +63,7 @@ export const defaultConfig: SSRDoctorConfig = {
     },
     'dynamic-ssr': {
       severity: 'warning',
-      autoFix: false,
+      
     },
     'hydration-risk': {
       severity: 'error',
@@ -99,7 +99,7 @@ export const presets: Record<string, SSRDoctorConfig> = {
       },
       'dynamic-ssr': {
         severity: 'error',
-        autoFix: false,
+        
       },
       'hydration-risk': {
         severity: 'error',
@@ -116,7 +116,7 @@ export const presets: Record<string, SSRDoctorConfig> = {
       },
       'dynamic-ssr': {
         severity: 'warning',
-        autoFix: true,
+        
       },
       'hydration-risk': {
         severity: 'warning',
@@ -235,4 +235,23 @@ export function validateConfig(config: SSRDoctorConfig): string[] {
   }
 
   return errors;
+}
+
+/**
+ * Merge command-line options with config file
+ * Command-line options take precedence over config file
+ */
+export function mergeWithCLI<T extends Partial<SSRDoctorConfig>>(
+  config: SSRDoctorConfig,
+  cliOptions: T
+): SSRDoctorConfig & T {
+  return {
+    ...config,
+    ...cliOptions,
+    // CLI ignore patterns should be added to config ignore patterns
+    ignore: [
+      ...(config.ignore || []),
+      ...(cliOptions.ignore || []),
+    ],
+  } as SSRDoctorConfig & T;
 }

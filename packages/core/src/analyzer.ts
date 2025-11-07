@@ -43,20 +43,44 @@ const BROWSER_GLOBALS = [
 
 const DYNAMIC_IMPORT_PATTERN = /dynamic\s*\(\s*\(\s*\)\s*=>\s*import\s*\(/g;
 
+// Performance optimization: Cache compiled regular expressions
+const REGEX_CACHE = new Map<string, RegExp>();
+
+/**
+ * Get or create a cached RegExp for API detection
+ */
+function getAPIPattern(api: string): RegExp {
+  const cacheKey = `api:${api}`;
+  if (!REGEX_CACHE.has(cacheKey)) {
+    REGEX_CACHE.set(cacheKey, new RegExp(`\\b${api}\\b`, 'g'));
+  }
+  return REGEX_CACHE.get(cacheKey)!;
+}
+
+/**
+ * Get or create a cached typeof guard patterns for an API
+ */
+function getTypeofGuardPatterns(api: string): RegExp[] {
+  const cacheKey = `typeof:${api}`;
+  if (!REGEX_CACHE.has(cacheKey)) {
+    const patterns = [
+      new RegExp(`typeof\\s+${api}\\s*!==?\\s*['"]undefined['"]`, 'i'),
+      new RegExp(`typeof\\s+${api}\\s*===?\\s*['"]undefined['"]`, 'i'),
+      new RegExp(`${api}\\s*!==?\\s*undefined`, 'i'),
+      new RegExp(`${api}\\s*===?\\s*undefined`, 'i'),
+    ];
+    // Store as combined pattern
+    REGEX_CACHE.set(cacheKey, new RegExp(patterns.map(p => p.source).join('|'), 'i'));
+  }
+  return [REGEX_CACHE.get(cacheKey)!];
+}
+
 /**
  * Check if a line contains a typeof guard for the given API
+ * Uses cached regex patterns for better performance
  */
 function hasTypeofGuard(line: string, api: string): boolean {
-  // typeof window !== 'undefined'
-  // typeof window !== "undefined"
-  // typeof window != 'undefined'
-  const patterns = [
-    new RegExp(`typeof\\s+${api}\\s*!==?\\s*['"]undefined['"]`, 'i'),
-    new RegExp(`typeof\\s+${api}\\s*===?\\s*['"]undefined['"]`, 'i'),
-    new RegExp(`${api}\\s*!==?\\s*undefined`, 'i'),
-    new RegExp(`${api}\\s*===?\\s*undefined`, 'i'),
-  ];
-
+  const patterns = getTypeofGuardPatterns(api);
   return patterns.some((pattern) => pattern.test(line));
 }
 
@@ -127,10 +151,17 @@ function isInUseEffect(lines: string[], lineIndex: number): boolean {
   return inUseEffect;
 }
 
+export interface DetectOptions {
+  /**
+   * Callback for handling errors (optional)
+   */
+  onError?: (filePath: string, error: Error) => void;
+}
+
 /**
  * Detect SSR compatibility issues in a file
  */
-export function detectSSRIssues(filePath: string): SSRIssue[] {
+export function detectSSRIssues(filePath: string, options?: DetectOptions): SSRIssue[] {
   const issues: SSRIssue[] = [];
 
   // Only check TypeScript/JavaScript files in potential SSR contexts
@@ -164,8 +195,8 @@ export function detectSSRIssues(filePath: string): SSRIssue[] {
 
       // Check each browser global
       for (const api of BROWSER_GLOBALS) {
-        // Create pattern that matches the API as a standalone word
-        const apiPattern = new RegExp(`\\b${api}\\b`, 'g');
+        // Use cached pattern for better performance
+        const apiPattern = getAPIPattern(api);
         const matches = [...line.matchAll(apiPattern)];
 
         for (const match of matches) {
@@ -236,7 +267,11 @@ export function detectSSRIssues(filePath: string): SSRIssue[] {
       }
     }
   } catch (error) {
-    // Ignore files that can't be read
+    // Call error callback if provided
+    if (options?.onError && error instanceof Error) {
+      options.onError(filePath, error);
+    }
+    // Otherwise silently ignore (for backward compatibility)
   }
 
   return issues;

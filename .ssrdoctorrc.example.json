@@ -8,8 +8,7 @@
       "ignorePatterns": ["**/*.test.*"]
     },
     "dynamic-ssr": {
-      "severity": "warning",
-      "autoFix": false
+      "severity": "warning"
     },
     "hydration-risk": {
       "severity": "error"

@@ -1,5 +1,4 @@
-import type { SSRIssue } from './analyzer.js';
-import { getIssueStats } from './analyzer.js';
+import { getIssueStats, type SSRIssue } from '@ssr-doctor/core';
 
 export interface FormatOptions {
   verbose?: boolean;
