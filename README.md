@@ -3,6 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/npm/v/@ssr-doctor/eslint-plugin?label=eslint-plugin&color=blue" alt="npm version" />
   <img src="https://img.shields.io/npm/v/@ssr-doctor/cli?label=cli&color=green" alt="cli version" />
+  <img src="https://img.shields.io/badge/GitHub%20Action-Available-success?logo=github" alt="GitHub Action" />
   <img src="https://img.shields.io/npm/dm/@ssr-doctor/eslint-plugin" alt="npm downloads" />
   <img src="https://img.shields.io/github/actions/workflow/status/wangzhe-dev/ssr-doctorjs/ci.yml?branch=main" alt="CI status" />
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
@@ -85,13 +86,17 @@ GitHub Action for automated PR checks with inline comments.
 
 ```yaml
 - uses: ssr-doctor/action@v1
+  with:
+    path: ./src
 ```
 
 **Features:**
-- ✅ PR comment reports
-- ✅ Inline annotations
-- ✅ Configurable strictness
-- ✅ Zero-config setup
+- ✅ PR comment reports with detailed explanations
+- ✅ Inline annotations on problematic lines
+- ✅ Configurable strictness levels
+- ✅ Zero-config setup (works immediately)
+- ✅ SARIF output for GitHub Code Scanning
+- ✅ Custom output formats (text, JSON, markdown)
 
 ---
 
@@ -187,17 +192,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ssr-doctor/action@v1
+
+      - name: Check SSR compatibility
+        uses: ssr-doctor/action@v1
         with:
           path: ./src
-          strict: true
+          fail-on-error: true
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 **Result:**
-- ✅ Inline comments on problematic lines
-- ✅ Summary table in PR comments
-- ✅ Fails PR if issues found (when `strict: true`)
+- ✅ Inline comments on problematic lines with fix suggestions
+- ✅ Summary table in PR comments showing all issues
+- ✅ Fails PR check if issues found (prevents accidental merge)
+- ✅ Links to documentation for each violation type
+- ✅ Works with branch protection rules
+
+**Advanced Options:**
+```yaml
+- uses: ssr-doctor/action@v1
+  with:
+    path: ./src                    # Directory to scan
+    format: markdown               # Output format (text|json|markdown|sarif)
+    strict: true                   # Fail on warnings too
+    ignore: "**/*.test.tsx"        # Ignore patterns
+    fail-on-error: false           # Report only, don't fail
+```
 
 ---
 

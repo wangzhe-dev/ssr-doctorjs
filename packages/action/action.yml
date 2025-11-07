@@ -1,5 +1,5 @@
 name: 'SSR Doctor'
-description: 'Detect SSR compatibility issues in your React/Next.js application'
+description: 'Detect and prevent server-side rendering compatibility issues in React and Next.js applications before they reach production'
 author: 'SSR Doctor Contributors'
 
 branding:
@@ -8,23 +8,44 @@ branding:
 
 inputs:
   path:
-    description: 'Path to scan for SSR issues'
+    description: 'Path to scan for SSR issues (e.g., ./src, ./app, ./pages)'
     required: false
     default: './src'
+
   format:
-    description: 'Output format (text or json)'
+    description: 'Output format: text, json, markdown, or sarif (for GitHub Code Scanning)'
     required: false
     default: 'text'
+
   fail-on-error:
-    description: 'Fail the action if issues are found'
+    description: 'Whether to fail the action if SSR compatibility issues are found'
     required: false
     default: 'true'
 
+  strict:
+    description: 'Fail on warnings in addition to errors (stricter enforcement)'
+    required: false
+    default: 'false'
+
+  ignore:
+    description: 'Glob patterns to ignore during scanning (comma-separated, e.g., "**/*.test.tsx,**/*.stories.tsx")'
+    required: false
+    default: ''
+
+  token:
+    description: 'GitHub token for posting PR comments and annotations (automatically provided by GitHub Actions)'
+    required: false
+    default: ${{ github.token }}
+
 outputs:
   issues-found:
-    description: 'Number of SSR issues found'
+    description: 'Total number of SSR compatibility issues detected (errors + warnings)'
+
   results:
-    description: 'Scan results in JSON format'
+    description: 'Detailed scan results in JSON format containing file paths, line numbers, and issue descriptions'
+
+  has-errors:
+    description: 'Boolean indicating whether any errors (not just warnings) were found'
 
 runs:
   using: 'node20'
