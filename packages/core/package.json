@@ -1,0 +1,53 @@
+{
+  "name": "@ssr-doctor/core",
+  "version": "0.1.0",
+  "description": "Core detection engine for SSR Doctor - shared by CLI and GitHub Action",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ssr",
+    "nextjs",
+    "react",
+    "server-side-rendering",
+    "hydration",
+    "browser-api",
+    "core",
+    "detection"
+  ],
+  "author": "SSR Doctor Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangzhe-dev/ssr-doctorjs.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/wangzhe-dev/ssr-doctorjs/issues"
+  },
+  "homepage": "https://github.com/wangzhe-dev/ssr-doctorjs/tree/main/packages/core#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

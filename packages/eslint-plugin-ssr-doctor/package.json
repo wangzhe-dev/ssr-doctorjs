@@ -1,0 +1,77 @@
+{
+  "name": "@ssr-doctor/eslint-plugin",
+  "version": "0.1.0",
+  "description": "ESLint plugin to detect SSR compatibility issues in React and Next.js applications",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "ssr",
+    "react",
+    "nextjs",
+    "next",
+    "server-side-rendering",
+    "hydration",
+    "dynamic-import",
+    "next-dynamic",
+    "browser-api",
+    "window",
+    "document",
+    "typescript"
+  ],
+  "author": "SSR Doctor Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangzhe-dev/ssr-doctorjs.git",
+    "directory": "packages/eslint-plugin-ssr-doctor"
+  },
+  "bugs": {
+    "url": "https://github.com/wangzhe-dev/ssr-doctorjs/issues"
+  },
+  "homepage": "https://github.com/wangzhe-dev/ssr-doctorjs/tree/main/packages/eslint-plugin-ssr-doctor#readme",
+  "peerDependencies": {
+    "eslint": "^8.0.0 || ^9.0.0"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.56.2",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/rule-tester": "^7.0.0",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
