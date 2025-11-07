@@ -402,13 +402,15 @@ const DesktopLayout = dynamic(() => import('./DesktopLayout'), { ssr: false });
 
 ## 🎬 Demo
 
-### CLI Scanning Demo
+> **📄 [View Complete Demo Output](./docs/demo-output.md)** - Detailed detection examples with test coverage reports
+
+### Quick CLI Scanning Demo
 
 ```bash
 npx ssr-doctor scan --path ./src
 ```
 
-**Output:**
+**Sample Output:**
 ```
 🔍 Scanning for SSR issues...
 Found 23 files to analyze
@@ -433,6 +435,18 @@ src/app/layout.tsx:
 💡 Run 'ssr-doctor fix' to auto-fix compatible issues
 💡 Add 'typeof window !== "undefined"' guards for runtime checks
 ```
+
+### Real Violation Detection
+
+The [demo output document](./docs/demo-output.md) showcases SSR Doctor detecting 4 real violations in [`examples/next-app`](./examples/next-app):
+
+1. ❌ **Direct window usage** in `WidthDetector.tsx` (no guard)
+2. ❌ **Hydration risk** from render-time browser API access
+3. ❌ **Missing `{ ssr: false }`** in `ChartComponent` dynamic import
+4. ❌ **Missing `{ ssr: false }`** in `MapComponent` dynamic import
+
+**Detection Rate**: 100% (4/4 violations found)
+**Test Coverage**: 94.73% (ESLint Plugin) | 89.47% (CLI)
 
 ### ESLint Integration Demo
 
@@ -471,6 +485,7 @@ src/app/layout.tsx:
 
 ## 📚 Documentation
 
+- **[Demo Output & Test Coverage](./docs/demo-output.md)** - Real violation detection examples
 - **[Guide: Using SSR Doctor in Large Monorepos](./docs/guide.md)**
 - **[Rule Reference](./packages/eslint-plugin-ssr-doctor/README.md)**
 - **[CLI Documentation](./packages/cli/README.md)**
