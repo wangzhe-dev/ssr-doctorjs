@@ -1,0 +1,31 @@
+name: 'SSR Doctor'
+description: 'Detect SSR compatibility issues in your React/Next.js application'
+author: 'SSR Doctor Contributors'
+
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+
+inputs:
+  path:
+    description: 'Path to scan for SSR issues'
+    required: false
+    default: './src'
+  format:
+    description: 'Output format (text or json)'
+    required: false
+    default: 'text'
+  fail-on-error:
+    description: 'Fail the action if issues are found'
+    required: false
+    default: 'true'
+
+outputs:
+  issues-found:
+    description: 'Number of SSR issues found'
+  results:
+    description: 'Scan results in JSON format'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
